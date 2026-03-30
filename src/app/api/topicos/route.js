@@ -108,7 +108,7 @@ export async function POST(request) {
         );
 
     } catch (error) {
-        console.error('Erro na criação de comentário:', error);
+        console.error('Erro na criação de tópico:', error);
         return NextResponse.json(
             { error: 'Erro interno do servidor. Tente novamente.' },
             { status: 500 }
