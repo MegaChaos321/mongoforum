@@ -1,40 +1,116 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# MongoForum
 
-## Getting Started
+A lightweight, full-stack discussion forum application built with **Next.js** and **MongoDB**. This project was developed as an academic assignment for a **NoSQL Database** course to demonstrate document database modeling, relationship management, and server-side data operations.
 
-First, run the development server:
+## 📖 Overview
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+MongoForum is a simple, modern forum platform where users can register accounts, publish discussion topics, and participate in conversations through comments. It showcases basic CRUD operations, API routes, optimistic UI updates, and data integrity techniques such as manual cascade deletion using document references.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## ✨ Features
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+* **User Authentication:**
+  * User registration and login using `bcryptjs` for secure password hashing.
+  * Session handling using local storage state for client access control.
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+* **Topic Management:**
+  * **Collapsible Creation Form:** Authenticated users can create new topics directly on the homepage via an interactive collapsible form.
+  * View all topics on the homepage with dynamic pagination.
+  * Topic deletion restricted strictly to the author.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+* **Comment System:**
+  * Add, edit, and delete comments on individual topic pages.
+  * **Optimistic Updates ("Masking"):** Instant visual updates on comment edits/creations without needing a page refresh.
+  * "Read More" functionality for expanding lengthy comments.
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+* **Backend Cascade Deletion:**
+  * Service-level logic enforcing relational integrity across document collections:
+    * **User Deletion:** Automatically purges all topics and comments authored by the user.
+    * **Topic Deletion:** Automatically purges all associated comments.
 
-## Learn More
+## 🛠️ Tech Stack & Dependencies
 
-To learn more about Next.js, take a look at the following resources:
+* **Framework:** Next.js (JavaScript, App Router)
+* **Database:** MongoDB
+* **Database Driver:** `mongodb` (Native Node.js Driver)
+* **Authentication / Security:** `bcryptjs`
+* **Styling / UI:** Modern CSS / React components
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
+## 🗂️ Data Structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The application models data across three primary MongoDB collections:
 
-## Deploy on Vercel
+1. **`users`**: Stores user credentials and basic account data.
+2. **`topics`**: Stores forum posts linked to an `authorId`.
+3. **`comments`**: Stores individual responses linked to both a `topicId` and an `authorId`.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🌐 Page Structure
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+The application consists of 4 main routes using the Next.js App Router:
+
+| Route | Description |
+| ----- | ----- |
+| `/` | **Homepage:** Displays paginated list of forum topics and includes a collapsible form for authenticated users to create topics. |
+| `/login` | **Login Page:** Authenticates existing users using hashed passwords. |
+| `/registo` | **Register Page:** Account creation form. |
+| `/topic/[id]` | **Topic Detail Page:** Displays single topic details, full comment thread, and creation/edit forms. |
+
+## 🔌 API Endpoints
+
+The Next.js App Router handles serverless API route handlers to expose the following endpoints:
+
+| Endpoint | Method | Description |
+| --- | --- | --- |
+| `/api/registo` | `POST` | Register a new user account |
+| `/api/login` | `POST` | Authenticate existing user |
+| `/api/topicos` | `GET` | Fetch paginated list of topics |
+| `/api/topicos` | `POST` | Create a new topic (Auth required) |
+| `/api/topicos/[id]` | `GET` | Fetch topic details by ID |
+| `/api/topicos/[id]` | `DELETE` | Delete topic and trigger cascade deletion of associated comments |
+| `/api/topicos/[id]/comentarios` | `GET` | Fetch all comments belonging to a specific topic |
+| `/api/comentarios` | `POST` | Create a new comment |
+| `/api/comentarios/[id]` | `PUT` | Edit an existing comment |
+| `/api/comentarios/[id]` | `DELETE` | Delete an existing comment |
+
+## 🚀 Getting Started
+
+Follow these steps to set up and run the project locally.
+
+### Prerequisites
+
+* [Node.js](https://nodejs.org/) (v18 or higher recommended)
+* A running [MongoDB](https://www.mongodb.com/) database instance (local or via MongoDB Atlas)
+
+### Installation
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/MegaChaos321/mongoforum.git
+   cd mongoforum
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+3. **Set up Environment Variables:**
+   Create a `.env.local` file in the root directory and add your MongoDB connection string:
+   ```env
+   MONGODB_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/mongoforum?retryWrites=true&w=majority
+   ```
+
+4. **Run the development server:**
+   ```bash
+   npm run dev
+   ```
+
+5. **Access the application:**
+   Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## 🎓 Academic Context
+
+This repository was created as a course assignment for a **NoSQL Databases** module. Key learning objectives included:
+
+* Modeling relationships in document-oriented databases.
+* Implementing business logic for data integrity without traditional RDBMS constraints.
+* Integrating MongoDB with modern full-stack web frameworks like Next.js.
